@@ -5,10 +5,9 @@ ENV PATH="/mattermost/bin:${PATH}"
 ENV MM_VERSION=4.9.0
 
 # Build argument to set Mattermost edition
-ARG edition=enterprise
+ARG edition=team
 ARG PUID=2000
 ARG PGID=2000
-
 
 # Install some needed packages
 RUN apk add --no-cache \
