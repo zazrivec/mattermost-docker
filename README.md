@@ -17,7 +17,7 @@ The following instructions deploy Mattermost in a production configuration using
 ### Requirements
 
 * [docker] (version `1.12+`)
-* [docker-compose] (version `1.10.0+` to support Compose file version `3.0`) 
+* [docker-compose] (version `1.10.0+` to support Compose file version `3.0`)
 
 ### Choose Edition to Install
 
@@ -84,13 +84,13 @@ applications:
   instances: 1
   memory: 1G
   disk_quota: 256M
-  env: 
+  env:
     DB_HOST: database host address
     DB_PORT_NUMBER: database port
     MM_DBNAME: database name
     MM_USERNAME: database username
     MM_PASSWORD: database password
-   
+
 ```
 
 ### Web server container
@@ -108,7 +108,7 @@ them you may generate a self-signed SSL certificate.
 #### Start
 If you are running docker with non root user, make sure the UID and GID in app/Dockerfile are the same as your current UID/GID
 ```
-mkdir -p ./volumes/app/mattermost/{data,logs,config}
+mkdir -p ./volumes/app/mattermost/{data,logs,config,plugins}
 chown -R 2000:2000 ./volumes/app/mattermost/
 docker-compose start
 ```
@@ -154,15 +154,15 @@ Your Docker image should now be on the latest Mattermost version.
 ## Upgrading Mattermost to 4.9+
 
 Docker images for `4.9.0` release introduce some important changes from [PR #241](https://github.com/mattermost/mattermost-docker/pull/241) to improve production use of Mattermost with Docker.
-**There are 2 important changes for existing installations**  
+**There are 2 important changes for existing installations**
 
 One important change is that we don't use `root` user by default to run the Mattermost application. So, as explained on [the README](https://github.com/mattermost/mattermost-docker#start), if you use host mounted volume you have to be sure that files on your host server have the correct UID/GID (by default those values are `2000`). In practice, you should just run following commands :
 ```
-mkdir -p ./volumes/app/mattermost/{data,logs,config}
+mkdir -p ./volumes/app/mattermost/{data,logs,config,plugins}
 chown -R 2000:2000 ./volumes/app/mattermost/
 ```
 
-The second important change is the port used by Mattermost application container. The default port is now `8000`, and existing installations that use port `80` will not work without a little configuration change. You have to open your Mattermost configuration file (`./volumes/app/mattermost/config/config.json` by default) and change the key `ServiceSettings.ListenAddress` to `:8000`.  
+The second important change is the port used by Mattermost application container. The default port is now `8000`, and existing installations that use port `80` will not work without a little configuration change. You have to open your Mattermost configuration file (`./volumes/app/mattermost/config/config.json` by default) and change the key `ServiceSettings.ListenAddress` to `:8000`.
 Also if you use your own web-server/reverse-proxy you need to change its configuration to reach port `8000` of the Mattermost container.
 
 
@@ -191,7 +191,7 @@ Running containerized applications on multi-node swarms involves specific data p
 
 First, create mattermost directory structure on the docker hosts:
 ```
-mkdir -p /var/lib/mattermost/{cert,config,data,logs}
+mkdir -p /var/lib/mattermost/{cert,config,data,logs,plugins}
 ```
 
 Then, fire up the stack in your swarm:
