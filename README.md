@@ -28,7 +28,7 @@ To install the team edition, comment out the two following lines in docker-compo
 args:
   - edition=team
 ```
-The `app` Dockerfile will read the `edition` build argument to install Team (`edition = 'team'`) or Entreprise (`edition != team`) edition.
+The `app` Dockerfile will read the `edition` build argument to install Team (`edition = 'team'`) or Enterprise (`edition != team`) edition.
 
 ### Database container
 This repository offer a Docker image for the Mattermost database. It is a customized PostgreSQL image that you should configure with following environment variables :
@@ -97,6 +97,8 @@ applications:
 This image is optional, you should **not** use it when you have your own reverse-proxy. It is a simple front Web server for the Mattermost app container. If you use the provided `docker-compose.yml` file, you don't have to configure anything. But if your application container is reachable on custom host and/or port (eg. if you use a container provider), you should add those two environment variables :
 * `APP_HOST`: application host address
 * `APP_PORT_NUMBER`: application HTTP port
+
+If you plan to upload large files to your Mattermost instance, Nginx will need to write some temporary files. In that case, the `read_only: true` option on the `web` container should be removed from your `docker-compose.yml` file.
 
 #### Install with SSL certificate
 Put your SSL certificate as `./volumes/web/cert/cert.pem` and the private key that has
