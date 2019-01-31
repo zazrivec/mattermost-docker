@@ -28,7 +28,7 @@ To install the team edition, comment out the two following lines in docker-compo
 args:
   - edition=team
 ```
-The `app` Dockerfile will read the `edition` build argument to install Team (`edition = 'team'`) or Entreprise (`edition != team`) edition.
+The `app` Dockerfile will read the `edition` build argument to install Team (`edition = 'team'`) or Enterprise (`edition != team`) edition.
 
 ### Database container
 This repository offer a Docker image for the Mattermost database. It is a customized PostgreSQL image that you should configure with following environment variables :
@@ -48,9 +48,9 @@ If deploying to AWS, you could also set following variables to enable [Wal-E](ht
 All four environment variables are required. It will enable completed WAL segments sent to archive storage (S3). The base backup and clean up can be done through the following command:
 ```bash
 # Base backup
-docker exec mattermost-db su - postgres sh -c "/usr/bin/envdir /etc/wal-e.d/env /usr/local/bin/wal-e backup-push /var/lib/postgresql/data"
+docker exec mattermost-db su - postgres sh -c "/usr/bin/envdir /etc/wal-e.d/env /usr/bin/wal-e backup-push /var/lib/postgresql/data"
 # Keep the most recent 7 base backups and remove the old ones
-docker exec mattermost-db su - postgres sh -c "/usr/bin/envdir /etc/wal-e.d/env /usr/local/bin/wal-e delete --confirm retain 7"
+docker exec mattermost-db su - postgres sh -c "/usr/bin/envdir /etc/wal-e.d/env /usr/bin/wal-e delete --confirm retain 7"
 ```
 Those tasks can be executed through a cron job or systemd timer.
 
@@ -97,6 +97,8 @@ applications:
 This image is optional, you should **not** use it when you have your own reverse-proxy. It is a simple front Web server for the Mattermost app container. If you use the provided `docker-compose.yml` file, you don't have to configure anything. But if your application container is reachable on custom host and/or port (eg. if you use a container provider), you should add those two environment variables :
 * `APP_HOST`: application host address
 * `APP_PORT_NUMBER`: application HTTP port
+
+If you plan to upload large files to your Mattermost instance, Nginx will need to write some temporary files. In that case, the `read_only: true` option on the `web` container should be removed from your `docker-compose.yml` file.
 
 #### Install with SSL certificate
 Put your SSL certificate as `./volumes/web/cert/cert.pem` and the private key that has

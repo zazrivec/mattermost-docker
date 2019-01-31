@@ -2,14 +2,12 @@
 
 # Function to generate a random salt
 generate_salt() {
-  cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 48 | head -n 1
+  tr -dc 'a-zA-Z0-9' < /dev/urandom | fold -w 48 | head -n 1
 }
 
 # Read environment variables or set default values
 DB_HOST=${DB_HOST:-db}
 DB_PORT_NUMBER=${DB_PORT_NUMBER:-5432}
-MM_USERNAME=${MM_USERNAME:-mmuser}
-MM_PASSWORD=${MM_PASSWORD:-mmuser_password}
 MM_DBNAME=${MM_DBNAME:-mattermost}
 MM_CONFIG=${MM_CONFIG:-/mattermost/config/config.json}
 
@@ -56,7 +54,7 @@ if [ "$1" = 'mattermost' ]; then
   fi
 
   # Configure database access
-  if [ -z "$MM_SQLSETTINGS_DATASOURCE" ]
+  if [[ -z "$MM_SQLSETTINGS_DATASOURCE" && ! -z "$MM_USERNAME" && ! -z "$MM_PASSWORD" ]]
   then
     echo -ne "Configure database connection..."
     # URLEncode the password, allowing for special characters
@@ -66,13 +64,6 @@ if [ "$1" = 'mattermost' ]; then
   else
     echo "Using existing database connection"
   fi
-
-  # Wait for database to be reachable
-  echo "Wait until database $DB_HOST:$DB_PORT_NUMBER is ready..."
-  until nc -z $DB_HOST $DB_PORT_NUMBER
-  do
-    sleep 1
-  done
 
   # Wait another second for the database to be properly started.
   # Necessary to avoid "panic: Failed to open sql connection pq: the database system is starting up"
