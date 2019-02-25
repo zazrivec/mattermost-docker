@@ -20,7 +20,7 @@ script:
     - docker ps -a | grep app | grep healthy
     - docker ps -a | grep db | grep healthy
     - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-    - if [ ! -z "$TRAVIS_TAG" ]; then docker tag mattermost-prod-app zazrivec/mattermost-prod-app:$TRAVIS_TAG; fi && docker push zazrivec/mattermost-prod-app
+    - if [ ! -z "$TRAVIS_TAG" ]; then docker tag mattermost-prod-app zazrivec/mattermost-prod-app:$TRAVIS_TAG; fi && docker push zazrivec/mattermost-prod-app:$TRAVIS_TAG
 
 after_failure:
     - timeout 3s docker-compose logs app db web
