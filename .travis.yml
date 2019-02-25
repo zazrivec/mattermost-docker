@@ -19,6 +19,8 @@ script:
     - curl -sSf http://localhost > /dev/null
     - docker ps -a | grep app | grep healthy
     - docker ps -a | grep db | grep healthy
+    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+    - if [ ! -z "$TRAVIS_TAG" ]; then docker tag zazrivec/mattermost-prod-app:latest zazrivec/mattermost-prod-app:$TRAVIS_TAG; fi && docker push zazrivec/mattermost-prod-app
 
 after_failure:
     - timeout 3s docker-compose logs app db web
