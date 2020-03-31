@@ -21,7 +21,8 @@ services:
 
   app:
     build: app
-      # uncomment following lines for team edition or change UID/GID
+      # change `build:app` to `build:` and uncomment following lines for team edition or change UID/GID
+      # context: app
       # args:
       #   - edition=team
       #   - PUID=1000
@@ -58,6 +59,3 @@ services:
       # This directory must have cert files if you want to enable SSL
       - ./volumes/web/cert:/cert:ro
       - /etc/localtime:/etc/localtime:ro
-    # Uncomment for SSL
-    # environment:
-    #  - MATTERMOST_ENABLE_SSL=true
